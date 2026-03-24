@@ -1,0 +1,122 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Setup | Framework7 MCP Server';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-mcp
+  .docs-content
+
+    h1 MCP Server Setup
+
+    p The Framework7 MCP server is available at:
+
+    ```
+      https://framework7.io/mcp
+    ```
+
+    h2 Cursor
+
+    p Add to <code>.cursor/mcp.json</code> in your project:
+
+    ```json
+      {
+        "mcpServers": {
+          "framework7": {
+            "url": "https://framework7.io/mcp"
+          }
+        }
+      }
+    ```
+
+    h2 Claude Code
+
+    p Add the MCP server using the CLI:
+
+    ```shell
+      claude mcp add --transport http framework7 https://framework7.io/mcp
+    ```
+
+    p You can verify it was added:
+
+    ```shell
+      claude mcp list
+    ```
+
+    p By default adds to local scope. Use <code>-s project</code> or <code>-s user</code> flags to change scope.
+
+    h2 VS Code
+
+    p Create <code>.vscode/mcp.json</code> in your project:
+
+    ```json
+      {
+        "servers": {
+          "framework7": {
+            "type": "http",
+            "url": "https://framework7.io/mcp"
+          }
+        }
+      }
+    ```
+
+    p Or use the Command Palette: <b>MCP: Add Server</b> → HTTP → <code>framework7</code> → <code>https://framework7.io/mcp</code>
+
+    h2 Codex (OpenAI)
+
+    p Add via CLI:
+
+    ```shell
+      codex mcp add framework7 --url https://framework7.io/mcp
+    ```
+
+    p Or edit <code>~/.codex/config.toml</code>:
+
+    ```toml
+      [mcp_servers.framework7]
+      url = "https://framework7.io/mcp"
+    ```
+
+    h2 OpenCode
+
+    p Add to <code>opencode.jsonc</code>:
+
+    ```json
+      {
+        "mcp": {
+          "framework7": {
+            "type": "remote",
+            "url": "https://framework7.io/mcp",
+            "enabled": true
+          }
+        }
+      }
+    ```
+
+    h2 Other MCP Clients
+
+    p Any MCP-compatible client can connect to the Framework7 MCP server using the Streamable HTTP transport. The endpoint is:
+
+    ```
+      https://framework7.io/mcp
+    ```
+
+    h2 Verify Connection
+
+    p You can verify the server is running by checking the health endpoint:
+
+    ```shell
+      curl https://framework7.io/mcp/health
+    ```
+
+    p Or by sending an initialize request:
+
+    ```shell
+      curl -X POST https://framework7.io/mcp \
+        -H "Content-Type: application/json" \
+        -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05"}}'
+    ```
+

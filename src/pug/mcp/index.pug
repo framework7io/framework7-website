@@ -1,0 +1,71 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Framework7 MCP Server';
+
+block content
+  .docs-nav
+    include ../_docs-menu-mcp
+  .docs-content
+
+    h1 Framework7 MCP Server
+
+    p Framework7 provides an <a href="https://modelcontextprotocol.io/" target="_blank">MCP (Model Context Protocol)</a> server that allows AI assistants and tools to query the Framework7 API documentation programmatically.
+
+    p With the MCP server, AI tools like Claude, Cursor, Windsurf, and other MCP-compatible clients can:
+
+    ul
+      li Search across Framework7 parameters, methods, events, and CSS variables
+      li Get full API documentation for any component
+      li Look up specific parameters, methods, or events
+      li Retrieve CSS custom properties grouped by theme
+      li Browse and retrieve demo source code for Core, Vue, React, and Svelte
+
+    h2 How It Works
+
+    p The MCP server exposes a JSON-RPC 2.0 endpoint at <code>https://framework7.io/mcp</code>. MCP-compatible clients connect to this endpoint and can call any of the 9 available tools to retrieve Framework7 API information.
+
+    p The server provides access to:
+    ul
+      li <b>68 components</b> with their full API (parameters, methods, events)
+      li <b>CSS variables</b> for 57 components with iOS and Material Design theme values
+      li <b>Demo source code</b> for all available demos across 4 framework variants
+
+    h2 Available Tools
+
+    p The MCP server provides the following tools:
+
+    table
+      thead
+        tr
+          th Tool
+          th Description
+      tbody
+        tr
+          td <code>list-components</code>
+          td List all available Framework7 components and modules
+        tr
+          td <code>get-component</code>
+          td Get full API for a component (parameters, events, methods, CSS variables)
+        tr
+          td <code>search-api</code>
+          td Fuzzy search across parameters, methods, events, and CSS variables
+        tr
+          td <code>get-parameter</code>
+          td Get details for a specific parameter/option
+        tr
+          td <code>get-method</code>
+          td Get details for a specific method (instance or app-level)
+        tr
+          td <code>get-event</code>
+          td Get details for a specific event (instance, app, or DOM)
+        tr
+          td <code>get-css-variables</code>
+          td Get CSS custom properties for a component by theme
+        tr
+          td <code>list-demos</code>
+          td List all available demos with slugs and frameworks
+        tr
+          td <code>get-demo</code>
+          td Get demo source code for a specific framework variant
+

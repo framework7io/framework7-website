@@ -1,0 +1,342 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Tools Reference | Framework7 MCP Server';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-mcp
+  .docs-content
+
+    h1 Tools Reference
+
+    p The Framework7 MCP server provides 9 tools for querying Framework7 API documentation.
+
+    h2 list-components
+
+    p List all available Framework7 components and modules with their names.
+
+    h4 Parameters
+
+    p None.
+
+    h4 Example
+
+    ```json
+      {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/call",
+        "params": {
+          "name": "list-components",
+          "arguments": {}
+        }
+      }
+    ```
+
+    h2 get-component
+
+    p Get the full API for a Framework7 component including parameters, events, methods, app methods, app parameters, app events, DOM events, and CSS variables.
+
+    h4 Parameters
+
+    table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Required
+          th Description
+      tbody
+        tr
+          td <code>name</code>
+          td string
+          td Yes
+          td Component name. Accepts kebab-case (e.g., <code>smart-select</code>) or PascalCase (e.g., <code>SmartSelect</code>).
+
+    h4 Example
+
+    ```json
+      {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/call",
+        "params": {
+          "name": "get-component",
+          "arguments": {
+            "name": "dialog"
+          }
+        }
+      }
+    ```
+
+    h2 search-api
+
+    p Search Framework7 API documentation across parameters, methods, events, and CSS variables. Returns matching results with descriptions.
+
+    h4 Parameters
+
+    table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Required
+          th Description
+      tbody
+        tr
+          td <code>query</code>
+          td string
+          td Yes
+          td Search query string.
+        tr
+          td <code>type</code>
+          td string
+          td No
+          td Filter by type. One of: <code>parameter</code>, <code>method</code>, <code>event</code>, <code>css-variable</code>, <code>all</code>. Defaults to <code>all</code>.
+
+    h4 Example
+
+    ```json
+      {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/call",
+        "params": {
+          "name": "search-api",
+          "arguments": {
+            "query": "backdrop",
+            "type": "parameter"
+          }
+        }
+      }
+    ```
+
+    h2 get-parameter
+
+    p Get detailed information about a specific Framework7 parameter/option by name, including type, default value, and description.
+
+    h4 Parameters
+
+    table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Required
+          th Description
+      tbody
+        tr
+          td <code>name</code>
+          td string
+          td Yes
+          td The parameter name (e.g., <code>backdrop</code>, <code>animate</code>, <code>closeByBackdropClick</code>).
+        tr
+          td <code>component</code>
+          td string
+          td No
+          td Component name to scope the search (e.g., <code>dialog</code>, <code>popup</code>).
+
+    h4 Example
+
+    ```json
+      {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/call",
+        "params": {
+          "name": "get-parameter",
+          "arguments": {
+            "name": "closeByBackdropClick",
+            "component": "dialog"
+          }
+        }
+      }
+    ```
+
+    h2 get-method
+
+    p Get detailed information about a specific Framework7 method by name, including signature, parameters, and description. Covers both instance methods and app-level methods.
+
+    h4 Parameters
+
+    table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Required
+          th Description
+      tbody
+        tr
+          td <code>name</code>
+          td string
+          td Yes
+          td The method name (e.g., <code>open</code>, <code>close</code>, <code>create</code>, <code>destroy</code>).
+        tr
+          td <code>component</code>
+          td string
+          td No
+          td Component name to scope the search (e.g., <code>dialog</code>, <code>popup</code>).
+
+    h4 Example
+
+    ```json
+      {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/call",
+        "params": {
+          "name": "get-method",
+          "arguments": {
+            "name": "open",
+            "component": "popup"
+          }
+        }
+      }
+    ```
+
+    h2 get-event
+
+    p Get detailed information about a specific Framework7 event by name, including parameters and description. Covers instance events, app-level events, and DOM events.
+
+    h4 Parameters
+
+    table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Required
+          th Description
+      tbody
+        tr
+          td <code>name</code>
+          td string
+          td Yes
+          td The event name (e.g., <code>open</code>, <code>opened</code>, <code>close</code>, <code>closed</code>).
+        tr
+          td <code>component</code>
+          td string
+          td No
+          td Component name to scope the search (e.g., <code>dialog</code>, <code>popup</code>).
+
+    h4 Example
+
+    ```json
+      {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/call",
+        "params": {
+          "name": "get-event",
+          "arguments": {
+            "name": "opened",
+            "component": "dialog"
+          }
+        }
+      }
+    ```
+
+    h2 get-css-variables
+
+    p Get CSS custom properties (variables) for a Framework7 component, grouped by theme (iOS, Material Design) with their values.
+
+    h4 Parameters
+
+    table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Required
+          th Description
+      tbody
+        tr
+          td <code>component</code>
+          td string
+          td Yes
+          td Component name (e.g., <code>dialog</code>, <code>navbar</code>, <code>toolbar</code>).
+
+    h4 Example
+
+    ```json
+      {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/call",
+        "params": {
+          "name": "get-css-variables",
+          "arguments": {
+            "component": "navbar"
+          }
+        }
+      }
+    ```
+
+    h2 list-demos
+
+    p List all available Framework7 demos with their slugs and available frameworks (core, vue, react, svelte).
+
+    h4 Parameters
+
+    p None.
+
+    h4 Example
+
+    ```json
+      {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/call",
+        "params": {
+          "name": "list-demos",
+          "arguments": {}
+        }
+      }
+    ```
+
+    h2 get-demo
+
+    p Get demo source code for a specific Framework7 demo in a given framework variant (core, vue, react, or svelte).
+
+    h4 Parameters
+
+    table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Required
+          th Description
+      tbody
+        tr
+          td <code>slug</code>
+          td string
+          td Yes
+          td The demo slug (e.g., <code>accordion</code>, <code>action-sheet</code>, <code>color-themes</code>). Use <code>list-demos</code> to get available slugs.
+        tr
+          td <code>framework</code>
+          td string
+          td Yes
+          td Framework variant. One of: <code>core</code>, <code>vue</code>, <code>react</code>, <code>svelte</code>.
+
+    h4 Example
+
+    ```json
+      {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/call",
+        "params": {
+          "name": "get-demo",
+          "arguments": {
+            "slug": "color-themes",
+            "framework": "core"
+          }
+        }
+      }
+    ```
+
