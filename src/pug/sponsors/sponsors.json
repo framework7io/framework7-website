@@ -1,9 +1,19 @@
 [
   {
+    "createdAt": "2026-03-27T20:00:00.000Z",
+    "title": "PunchngNGR Norway",
+    "link": "https://punchng.com/casino-online/no/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/punchngngr-norway",
+    "image": "punchngngr-norway.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2026-03-25T20:00:00.000Z",
     "title": "VanguardNGR Spain",
     "link": "https://www.vanguardngr.com/casino/es/",
-    "plan": "Sponsor",
+    "plan": "topSupporter",
     "ref": "https://opencollective.com/vanguardngr-spain",
     "image": "vanguardngr-spain.png",
     "endDate": "",
@@ -13,7 +23,7 @@
     "createdAt": "2026-03-25T20:00:00.000Z",
     "title": "Buy TikTok Likes and Views",
     "link": "https://www.reddit.com/r/ProductivityHQ/comments/1ry1jdc/what_is_the_best_site_to_buy_tiktok_likes_and/",
-    "plan": "Sponsor",
+    "plan": "topSupporter",
     "ref": "https://opencollective.com/buy-tiktok-likes-and-views",
     "image": "",
     "endDate": "",
@@ -23,7 +33,7 @@
     "createdAt": "2026-03-23T20:00:00.000Z",
     "title": "casinos fiables fuera de España",
     "link": "https://www.casino.escritoscientificos.es/",
-    "plan": "Sponsor",
+    "plan": "topSupporter",
     "ref": "https://opencollective.com/casinos-fiables-fuera-de-espana",
     "image": "casinos-fiables-fuera-de-espana.png",
     "endDate": "",
