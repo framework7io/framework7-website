@@ -1,5 +1,15 @@
 [
   {
+    "createdAt": "2026-03-30T20:00:00.000Z",
+    "title": "PunchngNGR Poland",
+    "link": "https://punchng.com/casino-online/pl/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/punchngngr-poland",
+    "image": "punchngngr-norway.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2026-03-27T20:00:00.000Z",
     "title": "PunchngNGR Norway",
     "link": "https://punchng.com/casino-online/no/",
