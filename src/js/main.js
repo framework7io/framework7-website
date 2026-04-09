@@ -14,6 +14,10 @@ Object.keys(methods).forEach((key) => {
   $.fn[key] = methods[key];
 });
 
+if (window.__NO_SPONSORS__) {
+  document.querySelectorAll('[data-sponsors]').forEach((el) => el.remove());
+}
+
 initHomeCanvas();
 initDocsTables();
 initDocsSearch();

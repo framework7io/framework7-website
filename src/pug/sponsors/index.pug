@@ -4,34 +4,35 @@ block vars
   - var title = 'Framework7 Sponsors';
 
 block content
-  - var sponsors = getSponsors(getJSONData('sponsors/sponsors.json'));
-  h1.text-align-center Framework7 Sponsors
-  p.text-align-center.large-text Become Framework7 sponsor by pledging on <a href="https://www.patreon.com/framework7" target="_blank">Patreon</a> or <a href="http://opencollective.com/framework7" target="_blank">Open Collective</a>.
+  div(data-sponsors)
+    - var sponsors = getSponsors(getJSONData('sponsors/sponsors.json'));
+    h1.text-align-center Framework7 Sponsors
+    p.text-align-center.large-text Become Framework7 sponsor by pledging on <a href="https://www.patreon.com/framework7" target="_blank">Patreon</a> or <a href="http://opencollective.com/framework7" target="_blank">Open Collective</a>.
 
 
-  h2.text-align-center Gold Sponsor
-  .sponsors.sponsors-gold
-    if (sponsors.goldSponsor)
-      each sponsor in sponsors.goldSponsor
-        a.sponsor(href=sponsor.link, target="_blank", rel="sponsored")
-          img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
-  a.sponsor.sponsor-join(href="https://opencollective.com/framework7/contribute/gold-sponsor-15263/checkout?interval=month&amount=250&contributeAs=vladimirkharlampidi", target="_blank") Become Gold Sponsor
+    h2.text-align-center Gold Sponsor
+    .sponsors.sponsors-gold
+      if (sponsors.goldSponsor)
+        each sponsor in sponsors.goldSponsor
+          a.sponsor(href=sponsor.link, target="_blank", rel="sponsored")
+            img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
+    a.sponsor.sponsor-join(href="https://opencollective.com/framework7/contribute/gold-sponsor-15263/checkout?interval=month&amount=250&contributeAs=vladimirkharlampidi", target="_blank") Become Gold Sponsor
 
-  h2.text-align-center Silver Sponsor
-  .sponsors.sponsors-silver
-    if (sponsors.silverSponsor)
-      each sponsor in sponsors.silverSponsor
-        a.sponsor(href=sponsor.link, target="_blank", rel="sponsored")
-          img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
-  a.sponsor.sponsor-join(href="https://opencollective.com/framework7/contribute/silver-sponsor-yearly-15265/checkout?interval=year&amount=960&contributeAs=vladimirkharlampidi", target="_blank") Become Silver Sponsor
+    h2.text-align-center Silver Sponsor
+    .sponsors.sponsors-silver
+      if (sponsors.silverSponsor)
+        each sponsor in sponsors.silverSponsor
+          a.sponsor(href=sponsor.link, target="_blank", rel="sponsored")
+            img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
+    a.sponsor.sponsor-join(href="https://opencollective.com/framework7/contribute/silver-sponsor-yearly-15265/checkout?interval=year&amount=960&contributeAs=vladimirkharlampidi", target="_blank") Become Silver Sponsor
 
-  h2.text-align-center Sponsor
-  .sponsors.sponsors-top
-    if (sponsors.topSupporter)
-      each sponsor in sponsors.topSupporter
-        a.sponsor(href=sponsor.link, target="_blank", rel="sponsored")
-          img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
-  a.sponsor.sponsor-join(href="https://opencollective.com/framework7/contribute/sponsor-yearly-15262/checkout?interval=year&amount=480&contributeAs=vladimirkharlampidi", target="_blank") Become Top Supporter
+    h2.text-align-center Sponsor
+    .sponsors.sponsors-top
+      if (sponsors.topSupporter)
+        each sponsor in sponsors.topSupporter
+          a.sponsor(href=sponsor.link, target="_blank", rel="sponsored")
+            img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
+    a.sponsor.sponsor-join(href="https://opencollective.com/framework7/contribute/sponsor-yearly-15262/checkout?interval=year&amount=480&contributeAs=vladimirkharlampidi", target="_blank") Become Top Supporter
 
 
 
