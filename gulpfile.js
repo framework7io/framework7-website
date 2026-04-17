@@ -5,6 +5,7 @@ const buildStyles = require('./build/build-styles');
 const buildPages = require('./build/build-pages');
 const buildScript = require('./build/build-script');
 const buildSponsors = require('./build/build-sponsors');
+const buildN4Sponsors = require('./build/build-n4-sponsors');
 
 const buildCoreDemos = require('./build/build-core-demos');
 const buildSvelteDemos = require('./build/build-svelte-demos');
@@ -15,7 +16,8 @@ const buildReactDemos = require('./build/build-react-demos');
 Build Styles
 ================================================================== */
 gulp.task('less', buildStyles);
-gulp.task('sponsors', buildSponsors);
+gulp.task('n4-sponsors', buildN4Sponsors);
+gulp.task('sponsors', gulp.series('n4-sponsors', buildSponsors));
 gulp.task('pug', buildPages);
 gulp.task('js', buildScript);
 gulp.task('core-demos', buildCoreDemos.all);

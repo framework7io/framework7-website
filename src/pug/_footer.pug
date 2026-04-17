@@ -62,8 +62,9 @@ footer
           - var sponsors = getSponsors(getJSONData('sponsors/sponsors.json'));
           if (sponsors.goldSponsor)
             each sponsor in sponsors.goldSponsor
+              - var footerImage = (sponsor.image_h || sponsor.image); footerImage = footerImage && footerImage.indexOf('http') === 0 ? footerImage : '/i/sponsors/' + footerImage;
               a.border(href=sponsor.link, target="_blank", rel="sponsored")
-                img(src='/i/sponsors/' + (sponsor.image_h || sponsor.image), alt=sponsor.title, title=sponsor.title)
+                img(src=footerImage, alt=sponsor.title, title=sponsor.title)
     .copy
       .copy-left
         p Code licensed under <a href="https://github.com/framework7io/framework7/blob/master/LICENSE" target="_blank">MIT</a>

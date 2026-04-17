@@ -11,6 +11,7 @@ public/contribute/index.html
 public/cli/*.html
 public/docs/*.html
 public/sponsors/sponsors.json
+src/pug/sponsors/n4-sponsors.json
 
 # public/docs-demos/*.html
 # public/docs-demos/core/*.html
