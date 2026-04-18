@@ -6,6 +6,7 @@ const buildPages = require('./build/build-pages');
 const buildScript = require('./build/build-script');
 const buildSponsors = require('./build/build-sponsors');
 const buildN4Sponsors = require('./build/build-n4-sponsors');
+const buildSitemap = require('./build/build-sitemap');
 
 const buildCoreDemos = require('./build/build-core-demos');
 const buildSvelteDemos = require('./build/build-svelte-demos');
@@ -25,7 +26,8 @@ gulp.task('svelte-demos', buildSvelteDemos.all);
 gulp.task('vue-demos', buildVueDemos.all);
 gulp.task('react-demos', buildReactDemos.all);
 gulp.task('demos', gulp.series(['core-demos', 'svelte-demos', 'vue-demos', 'react-demos']));
-gulp.task('build', gulp.series(['sponsors', 'less', 'js', 'pug', 'demos']));
+gulp.task('sitemap', buildSitemap);
+gulp.task('build', gulp.series(['sponsors', 'less', 'js', 'pug', 'demos', 'sitemap']));
 
 /* =================================
 Watch

@@ -1,4 +1,7 @@
 User-agent: *
+Content-Signal: ai-train=yes, search=yes, ai-input=yes
 Disallow: /packages/
 Disallow: /kitchen-sink/
 Disallow: /docs-demos/
+
+Sitemap: https://framework7.io/sitemap.xml
