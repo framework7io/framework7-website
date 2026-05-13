@@ -1,7 +1,17 @@
 [
   {
+    "createdAt": "2026-05-13T20:00:00.000Z",
+    "title": "maxamind.com - the personal knowledge and productivity workbench",
+    "link": "https://www.maxamind.com/",
+    "plan": "Sponsor",
+    "ref": "https://opencollective.com/bruce-dilger",
+    "image": "maxamind.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2026-05-04T20:00:00.000Z",
-    "title": "superclonewatches",
+    "title": "super clone watches",
     "link": "https://superclonewatches.com/",
     "plan": "Sponsor",
     "ref": "https://opencollective.com/superclonewatchescom",
