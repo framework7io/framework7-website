@@ -1,5 +1,35 @@
 [
   {
+    "createdAt": "2026-05-14T20:00:00.000Z",
+    "title": "το καλυτερο online casino",
+    "link": "https://www.jazzonline.gr/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/to-kalytero-online-casino",
+    "image": "to-kalytero-online-casino.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2026-05-14T20:00:00.000Z",
+    "title": "apuesdeportivas.es",
+    "link": "https://apuesdeportivas.es/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/apuesdeportivas-es",
+    "image": "apuesdeportivas-es.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2026-05-05T20:00:00.000Z",
+    "title": "CryptoNewsZ",
+    "link": "https://www.cryptonewsz.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/cryptonewsz",
+    "image": "cryptonewsz.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2026-05-13T20:00:00.000Z",
     "title": "maxamind.com - the personal knowledge and productivity workbench",
     "link": "https://www.maxamind.com/",
