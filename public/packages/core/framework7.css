@@ -1,5 +1,5 @@
 /**
- * Framework7 9.0.4
+ * Framework7 9.0.5
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: April 29, 2026
+ * Released on: May 27, 2026
  */
 
 /*====================
@@ -4744,7 +4744,7 @@ button .ripple-wave,
 .ios.dark {
   --f7-touch-highlight-bg-color: rgba(255, 255, 255, 0.3);
 }
-.ios .toolbar-pane,
+.ios .toolbar-pane:not(.tabbar-scrollable *),
 .ios .navbar .left,
 .ios .navbar .right,
 .ios .actions-group:not(.actions-grid .actions-group),

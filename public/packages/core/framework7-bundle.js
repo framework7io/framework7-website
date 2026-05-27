@@ -1,5 +1,5 @@
 /**
- * Framework7 9.0.4
+ * Framework7 9.0.5
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: April 29, 2026
+ * Released on: May 27, 2026
  */
 
 (function (global, factory) {
@@ -14324,6 +14324,7 @@
         const d = data;
         const el = e.target.closest(elements);
         if (!el) return;
+        if (el.closest('.tabbar-scrollable')) return;
         if (d.currentEl === el) return;
         d.currentEl = el;
         d.rect = el.getBoundingClientRect();
