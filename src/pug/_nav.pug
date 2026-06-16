@@ -62,8 +62,51 @@ nav
         a(href="https://blog.framework7.io" target="_blank") Blog
       li
         include _github-buttons
+      li.nav-uxd-item
+        button.nav-uxd(type="button" aria-label="Subscribe to User Experienced newsletter" title="User Experienced — weekly design picks")
+          img(src="/i/uxd-logo-black.png" alt="User Experienced")
+        span.nav-uxd-badge NEW
     .nav-menu-backdrop
     .nav-toggle
       span
       span
       span
+
+// User Experienced newsletter — auto popover (wide screens)
+.uxd-popover(role="dialog" aria-label="User Experienced newsletter")
+  .uxd-popover-header
+    button.uxd-popover-close(type="button" aria-label="Close")
+      svg(width="10" height="10" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg")
+        path(d="M3 3L13 13M13 3L3 13" stroke="currentColor" stroke-width="1.75" stroke-linecap="round")
+  .uxd-popover-body
+    a.uxd-popover-logo(href="https://uxed.substack.com" target="_blank" rel="noopener")
+      img(src="/i/uxd-logo-red.png" alt="User Experienced")
+    .uxd-popover-title Subscribe to the User Experienced
+    .uxd-popover-text Subscribe for weekly web, app, and logo design inspiration.
+  .uxd-popover-embed
+    iframe(data-src="https://uxed.substack.com/embed" frameborder="0" scrolling="no" title="Subscribe to User Experienced")
+  .uxd-popover-footer
+    span co-curated by
+    img(src="/i/logo.svg" alt="Framework7")
+    span Framework7 authors
+
+// User Experienced newsletter — modal (opened from nav button)
+.uxd-modal(role="dialog" aria-modal="true" aria-label="User Experienced newsletter")
+  .uxd-modal-backdrop
+  .uxd-modal-container
+    .uxd-modal-content
+      .uxd-modal-header
+        button.uxd-modal-close(type="button" aria-label="Close")
+          svg(width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg")
+            path(d="M3 3L13 13M13 3L3 13" stroke="currentColor" stroke-width="1.75" stroke-linecap="round")
+      .uxd-modal-embed
+        iframe(data-src="https://uxed.substack.com/embed" frameborder="0" scrolling="no" title="Subscribe to User Experienced")
+      .uxd-modal-footer
+        a.uxd-modal-footer-link(href="https://uxed.substack.com" target="_blank" rel="noopener")
+          img(src="/i/uxd-logo-red.png" alt="")
+          span User Experienced
+          span.uxd-modal-arrow ↗
+        .uxd-modal-credit
+          span co-curated by
+          img(src="/i/logo.svg" alt="Framework7")
+          span Framework7 authors
