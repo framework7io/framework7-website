@@ -1,5 +1,5 @@
 /**
- * Framework7 9.0.5
+ * Framework7 9.1.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: May 27, 2026
+ * Released on: June 29, 2026
  */
 
 /*====================
@@ -8944,6 +8944,14 @@ html:has(.sheet-modal-push-closing) .framework7-root > .panel-in.panel-push.pane
 .card-expandable.card-opened .card-opened-fade-out {
   opacity: 0;
   pointer-events: none;
+}
+.card-expandable.card-opening .card-header,
+.card-expandable.card-opened .card-header {
+  padding-top: calc(var(--f7-card-header-padding-vertical) + var(--f7-safe-area-top));
+}
+.card-expandable.card-opening .card-content > .card-content-padding:first-child,
+.card-expandable.card-opened .card-content > .card-content-padding:first-child {
+  padding-top: calc(var(--f7-card-content-padding-vertical) + var(--f7-safe-area-top));
 }
 .card-expandable.card-opened .card-content {
   overflow: auto;

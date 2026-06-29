@@ -1,5 +1,5 @@
 /**
- * Framework7 9.0.5
+ * Framework7 9.1.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: May 27, 2026
+ * Released on: June 29, 2026
  */
 
 (function (global, factory) {
@@ -4718,6 +4718,7 @@
           const keysArray = Object.keys(Object(nextSource));
           for (let nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex += 1) {
             const nextKey = keysArray[nextIndex];
+            if (nextKey === '__proto__' || nextKey === 'constructor' || nextKey === 'prototype') continue; // eslint-disable-line
             const desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
             if (desc !== undefined && desc.enumerable) {
               to[nextKey] = nextSource[nextKey];
@@ -4747,6 +4748,7 @@
           const keysArray = Object.keys(Object(nextSource));
           for (let nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex += 1) {
             const nextKey = keysArray[nextIndex];
+            if (nextKey === '__proto__' || nextKey === 'constructor' || nextKey === 'prototype') continue; // eslint-disable-line
             const desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
             if (desc !== undefined && desc.enumerable) {
               if (!deep) {
@@ -10846,9 +10848,14 @@
               }
             }
           };
+          // Allow passing modal-specific params via a `<type>Options` object
+          // (e.g. sheetOptions, popupOptions, popoverOptions, panelOptions, loginScreenOptions)
+          const openInType = options.openIn.split(':')[0];
           const params = {
-            ...options
+            ...options,
+            ...(options[`${openInType}Options`] || {})
           };
+          delete params[`${openInType}Options`];
           const component = (props, ctx) => {
             const {
               $h,

@@ -181,6 +181,7 @@ export function merge(...args) {
       const keysArray = Object.keys(Object(nextSource));
       for (let nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex += 1) {
         const nextKey = keysArray[nextIndex];
+        if (nextKey === '__proto__' || nextKey === 'constructor' || nextKey === 'prototype') continue; // eslint-disable-line
         const desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
         if (desc !== undefined && desc.enumerable) {
           to[nextKey] = nextSource[nextKey];
@@ -210,6 +211,7 @@ export function extend(...args) {
       const keysArray = Object.keys(Object(nextSource));
       for (let nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex += 1) {
         const nextKey = keysArray[nextIndex];
+        if (nextKey === '__proto__' || nextKey === 'constructor' || nextKey === 'prototype') continue; // eslint-disable-line
         const desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
         if (desc !== undefined && desc.enumerable) {
           if (!deep) {

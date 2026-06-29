@@ -86,9 +86,9 @@
     "wrangler": "^4.76.0"
   },
   "dependencies": {
-    "framework7": "^9.0.5",
-    "framework7-react": "^9.0.5",
-    "framework7-svelte": "^9.0.5",
-    "framework7-vue": "^9.0.5"
+    "framework7": "^9.1.0",
+    "framework7-react": "^9.1.0",
+    "framework7-svelte": "^9.1.0",
+    "framework7-vue": "^9.1.0"
   }
 }
