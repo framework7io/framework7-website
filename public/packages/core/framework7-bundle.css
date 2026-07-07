@@ -1,5 +1,5 @@
 /**
- * Framework7 9.1.0
+ * Framework7 9.1.1
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: June 29, 2026
+ * Released on: July 7, 2026
  */
 
 /*====================
@@ -11989,7 +11989,6 @@ label.item-radio.disabled,
   /*
   --f7-calendar-selected-bg-color:  var(--f7-theme-color);
   */
-  --f7-calendar-disabled-text-color: #d4d4d4;
   --f7-calendar-event-dot-size: 4px;
   /*
   --f7-calendar-event-bg-color: var(--f7-theme-color);
@@ -11998,12 +11997,14 @@ label.item-radio.disabled,
   --f7-calendar-picker-selected-text-color: var(--f7-theme-color);
   */
   --f7-calendar-time-selector-height: 28px;
+  --f7-calendar-disabled-text-color: #d4d4d4;
   --f7-calendar-picker-pressed-bg-color: rgba(0, 0, 0, 0.1);
   --f7-calendar-picker-hover-bg-color: rgba(0, 0, 0, 0.03);
   --f7-calendar-time-selector-bg-color: rgba(0, 0, 0, 0.05);
 }
 :root .dark,
 :root.dark {
+  --f7-calendar-disabled-text-color: #555;
   --f7-calendar-picker-pressed-bg-color: rgba(255, 255, 255, 0.08);
   --f7-calendar-picker-hover-bg-color: rgba(255, 255, 255, 0.03);
   --f7-calendar-time-selector-bg-color: rgba(255, 255, 255, 0.1);
