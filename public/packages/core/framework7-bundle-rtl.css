@@ -1,5 +1,5 @@
 /**
- * Framework7 9.1.1
+ * Framework7 9.1.2
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: July 7, 2026
+ * Released on: July 28, 2026
  */
 
 /*====================
@@ -15774,15 +15774,15 @@ table.data-table {
 }
 /* === Swiper === */
 /**
- * Swiper 12.0.3
+ * Swiper 12.2.0
  * Most modern mobile touch slider and framework with hardware accelerated transitions
  * https://swiperjs.com
  *
- * Copyright 2014-2025 Vladimir Kharlampidi
+ * Copyright 2014-2026 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: October 21, 2025
+ * Released on: May 27, 2026
  */
 
 :root {
@@ -15890,10 +15890,24 @@ table.data-table {
     > .swiper-wrapper {
       scroll-snap-type: x mandatory;
     }
+    > .swiper-wrapper > .swiper-slide:first-child {
+      margin-inline-start: var(--swiper-slides-offset-before);
+      scroll-margin-inline-start: var(--swiper-slides-offset-before);
+    }
+    > .swiper-wrapper > .swiper-slide:last-child {
+      margin-inline-end: var(--swiper-slides-offset-after);
+    }
   }
   &.swiper-vertical {
     > .swiper-wrapper {
       scroll-snap-type: y mandatory;
+    }
+    > .swiper-wrapper > .swiper-slide:first-child {
+      margin-block-start: var(--swiper-slides-offset-before);
+      scroll-margin-block-start: var(--swiper-slides-offset-before);
+    }
+    > .swiper-wrapper > .swiper-slide:last-child {
+      margin-block-end: var(--swiper-slides-offset-after);
     }
   }
   &.swiper-free-mode {
@@ -16074,6 +16088,8 @@ table.data-table {
   .swiper-navigation-disabled & {
     display: none !important;
   }
+
+  ::slotted(svg),
   svg {
     width: 100%;
     height: 100%;
@@ -16096,6 +16112,7 @@ table.data-table {
 .swiper-button-prev {
   left: var(--swiper-navigation-sides-offset, 4px);
   right: auto;
+  ::slotted(.swiper-navigation-icon),
   .swiper-navigation-icon {
     transform: rotate(180deg);
   }
@@ -16131,12 +16148,14 @@ table.data-table {
   & ~ .swiper-button-prev,
   &.swiper-rtl .swiper-button-next,
   &.swiper-rtl ~ .swiper-button-next {
+    ::slotted(.swiper-navigation-icon),
     .swiper-navigation-icon {
       transform: rotate(180deg);
     }
   }
   &.swiper-rtl .swiper-button-prev,
   &.swiper-rtl ~ .swiper-button-prev {
+    ::slotted(.swiper-navigation-icon),
     .swiper-navigation-icon {
       transform: rotate(0deg);
     }
@@ -16156,6 +16175,7 @@ table.data-table {
   ~ .swiper-button-prev {
     top: var(--swiper-navigation-sides-offset, 4px);
     bottom: auto;
+    ::slotted(.swiper-navigation-icon),
     .swiper-navigation-icon {
       transform: rotate(-90deg);
     }
@@ -16164,6 +16184,7 @@ table.data-table {
   ~ .swiper-button-next {
     bottom: var(--swiper-navigation-sides-offset, 4px);
     top: auto;
+    ::slotted(.swiper-navigation-icon),
     .swiper-navigation-icon {
       transform: rotate(90deg);
     }
