@@ -10,12 +10,34 @@ import {
 import { JSON_RPC_ERROR_CODES } from './types';
 import type { InitializeParams } from './types';
 import { handleInitialize } from './handlers/initialize';
+import { track } from '../agent-analytics/index.js';
 import {
   handleToolsList,
   handleToolsCall,
 } from './handlers/tools';
 
 export const mcpApp = new Hono<{ Bindings: CloudflareBindings }>();
+
+/** The argument that best says what a tool call was looking for. */
+function intentOf(args: unknown): string | undefined {
+  if (!args || typeof args !== 'object') return undefined;
+  const a = args as Record<string, unknown>;
+  for (const key of ['query', 'name', 'slug', 'component', 'framework']) {
+    const v = a[key];
+    if (typeof v === 'string' && v) return v;
+  }
+  return undefined;
+}
+
+/** Flat copy of the arguments for the analytics props field. */
+function flatArgs(args: unknown): Record<string, string | number | boolean> {
+  const out: Record<string, string | number | boolean> = {};
+  if (!args || typeof args !== 'object') return out;
+  for (const [k, v] of Object.entries(args as Record<string, unknown>)) {
+    if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') out[k] = v;
+  }
+  return out;
+}
 
 /**
  * GET /mcp - Basic endpoint info
@@ -64,6 +86,7 @@ mcpApp.post('/', async (c) => {
     const { method, id, params } = request;
 
     console.log('MCP: Handling method:', method, 'id:', id);
+    track(c, 'mcp.call', { value: method, props: { notification: id === undefined } });
 
     // Handle notifications (requests without id) - these don't expect a response
     if (id === undefined) {
@@ -128,14 +151,19 @@ mcpApp.post('/', async (c) => {
           c.env.ASSETS,
           baseUrl
         );
+        track(c, 'mcp.tool', {
+          value: toolParams.name,
+          query: intentOf(toolParams.arguments),
+          props: { ...flatArgs(toolParams.arguments), isError: result.isError === true },
+        });
         break;
       }
 
       default:
-        return c.json(
-          createMethodNotFoundError(id, method),
-          404
-        );
+        // JSON-RPC errors travel in the body with HTTP 200. Clients probe
+        // methods we do not implement (resources/list, prompts/list, ...)
+        // and a 404 makes them treat the whole server as unreachable.
+        return c.json(createMethodNotFoundError(id, method), 200);
     }
 
     return c.json(createResponse(id, result));
