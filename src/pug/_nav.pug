@@ -1,9 +1,53 @@
+-
+  const banners = [
+    {
+      id: 'cladd',
+      href: 'https://cladd.io/',
+      img: '/i/home-projects/cladd.svg',
+      prefix: 'Meet our new project:',
+      text: 'Cladd — A React UI kit for building actual apps',
+    },
+    {
+      id: 'paneflow',
+      href: 'https://paneflow.com/',
+      img: '/i/home-projects/paneflow.svg',
+      prefix: 'All-new',
+      text: 'PaneFlow v2 is here',
+    },
+    {
+      id: 'swiper-studio',
+      href: 'https://studio.swiperjs.com/',
+      img: '/i/home-projects/swiper-studio.svg',
+      prefix: 'All-new',
+      text: 'Swiper Studio v2 is here',
+    },
+    {
+      id: 't0ggles',
+      href: 'https://t0ggles.com/',
+      img: '/i/home-projects/t0ggles.svg',
+      prefix: 't0ggles —',
+      text: 'now with a free plan!',
+    },
+    {
+      id: 'startpagehq',
+      href: 'https://startpagehq.com/',
+      img: '/i/home-projects/startpagehq.svg',
+      prefix: 'Start Page HQ —',
+      text: 'now with a free plan!',
+    },
+  ];
 .sphq-banner
-
-  a(href="https://cladd.io/" target="_blank")
-    img(src="/i/home-projects/cladd.svg")
-    | Meet our new project:
-    span Cladd — A React UI kit for building actual apps
+  each banner in banners
+    a(href=banner.href target="_blank" data-banner=banner.id)
+      img(src=banner.img alt="")
+      | #{banner.prefix}
+      span #{banner.text}
+  script.
+    (function () {
+      var links = document.querySelectorAll('.sphq-banner a');
+      var link = links[Math.floor(Math.random() * links.length)];
+      if (link) link.classList.add('sphq-banner-active');
+    })();
 
 nav
   .nav-left
