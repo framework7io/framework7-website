@@ -1,5 +1,5 @@
 /**
- * Framework7 9.1.3
+ * Framework7 9.2.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: August 25, 2026
+ * Released on: September 28, 2026
  */
 
 /*====================
@@ -1930,13 +1930,13 @@ html.device-full-viewport body {
 .toolbar-top ~ *,
 .ios .toolbar-top-ios ~ *,
 .md .toolbar-top-md ~ *,
-.sheet-modal-bottom > .toolbar:not(.toolbar-bottom) ~ * {
+.sheet-modal:not(.sheet-modal-top) > .toolbar:not(.toolbar-bottom) ~ * {
   --f7-page-toolbar-top-offset: var(--f7-toolbar-height);
 }
 .toolbar-top.tabbar-icons ~ *,
 .ios .toolbar-top-ios.tabbar-icons ~ *,
 .md .toolbar-top-md.tabbar-icons ~ *,
-.sheet-modal-bottom > .toolbar:not(.toolbar-bottom).tabbar-icons ~ * {
+.sheet-modal:not(.sheet-modal-top) > .toolbar:not(.toolbar-bottom).tabbar-icons ~ * {
   --f7-page-toolbar-top-offset: var(--f7-tabbar-icons-height);
 }
 .toolbar-top.toolbar-hidden,
@@ -5494,6 +5494,7 @@ html:has(.popup-push-closing) .framework7-root > .view.dark:after {
 .login-screen-content,
 .login-screen-page,
 .login-screen .page {
+  --f7-page-bg-color: var(--f7-login-screen-content-bg-color);
   background: var(--f7-login-screen-content-bg-color);
 }
 .login-screen-content .login-screen-title,
@@ -9775,6 +9776,7 @@ textarea:-webkit-autofill-and-obscured {
 .ios .item-input-outline.item-content .item-input-wrap,
 .ios .input-outline .item-input-wrap {
   margin-top: 2px;
+  margin-bottom: 0;
 }
 .ios .item-input-outline .item-content .item-title + .item-input-wrap,
 .ios .item-input-outline.item-content .item-title + .item-input-wrap,

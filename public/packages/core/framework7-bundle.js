@@ -1,5 +1,5 @@
 /**
- * Framework7 9.1.3
+ * Framework7 9.2.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: August 25, 2026
+ * Released on: September 28, 2026
  */
 
 (function (global, factory) {
@@ -10765,6 +10765,11 @@
         const $clickedLinkEl = $clickedEl.closest('a');
         const isLink = $clickedLinkEl.length > 0;
         const url = isLink && $clickedLinkEl.attr('href');
+        if ($clickedLinkEl.hasClass('disabled')) {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
 
         // Check if link is external
         if (isLink) {

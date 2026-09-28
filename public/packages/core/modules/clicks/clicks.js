@@ -8,6 +8,11 @@ function initClicks(app) {
     const $clickedLinkEl = $clickedEl.closest('a');
     const isLink = $clickedLinkEl.length > 0;
     const url = isLink && $clickedLinkEl.attr('href');
+    if ($clickedLinkEl.hasClass('disabled')) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
 
     // Check if link is external
     if (isLink) {
