@@ -9,7 +9,6 @@ import initUiInitiativePlugins from './init-uiinititative-plugins';
 import initExamplePreview from './init-example-preview';
 import initHomeCanvas from './init-home-canvas';
 import initCopyCode from './init-copy-code';
-import initUxd from './init-uxd';
 
 Object.keys(methods).forEach((key) => {
   $.fn[key] = methods[key];
@@ -28,7 +27,6 @@ initDocsNav();
 initUiInitiativeTemplates();
 initUiInitiativePlugins();
 initExamplePreview();
-initUxd();
 
 if ($('.home-intro .constructor').length) {
   const content = $('.home-intro .constructor').html();
