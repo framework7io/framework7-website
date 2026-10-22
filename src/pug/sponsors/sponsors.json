@@ -1,5 +1,15 @@
 [
   {
+    "createdAt": "2026-10-22T20:00:00.000Z",
+    "title": "ViewSnapStories",
+    "link": "https://viewsnapstories.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/viewsnapstories",
+    "image": "viewsnapstories.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2026-10-14T20:00:00.000Z",
     "title": "Vlad vs Golf",
     "link": "https://vladvsgolf.com/",
