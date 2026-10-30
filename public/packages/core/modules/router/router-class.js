@@ -781,7 +781,7 @@ class Router extends Framework7Class {
     let {
       browserHistoryRoot
     } = router.params;
-    if ((window.cordova || window.Capacitor && (window.Capacitor.isNative || window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform())) && browserHistory && !browserHistorySeparator && !browserHistoryRoot && location.pathname.indexOf('index.html')) {
+    if ((window.cordova || window.Capacitor && (window.Capacitor.isNative || window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform())) && browserHistory && !browserHistorySeparator && !browserHistoryRoot && location.pathname.indexOf('index.html') >= 0) {
       // eslint-disable-next-line
       console.warn('Framework7: wrong or not complete browserHistory configuration, trying to guess browserHistoryRoot');
       browserHistoryRoot = location.pathname.split('index.html')[0];

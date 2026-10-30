@@ -5,7 +5,7 @@ const h = (type, props, ...children) => {
   return {
     type,
     props: props || {},
-    children: flattenArray(children.filter(child => ignoreChildren.indexOf(child) < 0))
+    children: flattenArray(children).filter(child => ignoreChildren.indexOf(child) < 0)
   };
 };
 const $h = htm.bind(h);

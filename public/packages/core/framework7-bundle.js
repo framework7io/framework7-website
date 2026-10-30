@@ -1,5 +1,5 @@
 /**
- * Framework7 9.2.0
+ * Framework7 9.3.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: September 28, 2026
+ * Released on: October 30, 2026
  */
 
 (function (global, factory) {
@@ -10204,7 +10204,7 @@
         let {
           browserHistoryRoot
         } = router.params;
-        if ((window.cordova || window.Capacitor && (window.Capacitor.isNative || window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform())) && browserHistory && !browserHistorySeparator && !browserHistoryRoot && location.pathname.indexOf('index.html')) {
+        if ((window.cordova || window.Capacitor && (window.Capacitor.isNative || window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform())) && browserHistory && !browserHistorySeparator && !browserHistoryRoot && location.pathname.indexOf('index.html') >= 0) {
           // eslint-disable-next-line
           console.warn('Framework7: wrong or not complete browserHistory configuration, trying to guess browserHistoryRoot');
           browserHistoryRoot = location.pathname.split('index.html')[0];
@@ -11080,7 +11080,7 @@
       return {
         type,
         props: props || {},
-        children: flattenArray(children.filter(child => ignoreChildren$1.indexOf(child) < 0))
+        children: flattenArray(children).filter(child => ignoreChildren$1.indexOf(child) < 0)
       };
     };
     const $h = htm.bind(h$1);
@@ -12100,7 +12100,7 @@
 
     const ignoreChildren = [false, null, '', undefined];
     const $jsx = (type, props, ...children) => {
-      const flatChildren = flattenArray((children || []).filter(child => ignoreChildren.indexOf(child) < 0));
+      const flatChildren = flattenArray(children || []).filter(child => ignoreChildren.indexOf(child) < 0);
       if (type === 'Fragment') {
         return flatChildren;
       }
