@@ -64,8 +64,7 @@ block content
       <script>
         import { onMount } from 'svelte';
         // define props so the component will receive it
-        export let f7route;
-        export let f7router;
+        let { f7route, f7router } = $props();
 
         onMount(() => {
           console.log(f7route.url)
