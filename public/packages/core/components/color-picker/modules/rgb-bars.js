@@ -78,7 +78,7 @@ export default {
       limitKnobPosition: true,
       on: {
         change(range, value) {
-          self.setValue({
+          self.setValueFromUser({
             rgb: [value, self.value.rgb[1], self.value.rgb[2]]
           });
         }
@@ -95,7 +95,7 @@ export default {
       limitKnobPosition: true,
       on: {
         change(range, value) {
-          self.setValue({
+          self.setValueFromUser({
             rgb: [self.value.rgb[0], value, self.value.rgb[2]]
           });
         }
@@ -112,7 +112,7 @@ export default {
       limitKnobPosition: true,
       on: {
         change(range, value) {
-          self.setValue({
+          self.setValueFromUser({
             rgb: [self.value.rgb[0], self.value.rgb[1], value]
           });
         }
@@ -128,7 +128,7 @@ export default {
       }
       value = Math.max(0, Math.min(255, value));
       rgb[index] = value;
-      self.setValue({
+      self.setValueFromUser({
         rgb
       });
     }

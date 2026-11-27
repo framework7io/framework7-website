@@ -33,7 +33,7 @@ export default {
       let b = (y - specterRect.top) / specterRect.height;
       s = Math.max(0, Math.min(1, s));
       b = 1 - Math.max(0, Math.min(1, b));
-      self.setValue({
+      self.setValueFromUser({
         hsb: [self.value.hue, s, b]
       });
     }

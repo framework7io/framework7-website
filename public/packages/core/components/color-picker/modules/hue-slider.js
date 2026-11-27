@@ -39,7 +39,7 @@ export default {
       limitKnobPosition: self.app.theme === 'ios',
       on: {
         change(range, value) {
-          self.setValue({
+          self.setValueFromUser({
             hue: value
           });
         }

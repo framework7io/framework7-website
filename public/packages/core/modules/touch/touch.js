@@ -291,6 +291,8 @@ function initTouch() {
   }
   function handleTouchEnd(e) {
     if (!e.isTrusted) return true;
+    // touchcancel is re-emitted as app "touchend" for components, cleanup is in handleTouchCancel
+    if (e.type === 'touchcancel') return true;
     isScrolling = undefined;
     isSegmentedStrong = false;
     segmentedStrongEl = null;
@@ -381,6 +383,10 @@ function initTouch() {
   function appTouchEndPassive(e) {
     emitAppTouchEvent('touchend:passive', e);
   }
+  function appTouchCancel(e) {
+    // Cancelled touch ends the gesture, so components relying on "touchend" can reset their state
+    emitAppTouchEvent('touchend touchend:active touchend:passive', e);
+  }
   const passiveListener = {
     passive: true
   };
@@ -402,6 +408,7 @@ function initTouch() {
   document.addEventListener(app.touchEvents.start, appTouchStartPassive, passiveListenerCapture);
   document.addEventListener(app.touchEvents.move, appTouchMovePassive, passiveListener);
   document.addEventListener(app.touchEvents.end, appTouchEndPassive, passiveListener);
+  document.addEventListener(app.touchEvents.cancel, appTouchCancel, passiveListener);
   if (support.touch) {
     app.on('click', handleClick);
     app.on('touchstart', handleTouchStart);
@@ -414,9 +421,6 @@ function initTouch() {
     app.on('touchstart', handleMouseDown);
     app.on('touchmove', handleMouseMove);
     app.on('touchend', handleMouseUp);
-    document.addEventListener('pointercancel', handleMouseUp, {
-      passive: true
-    });
   }
   document.addEventListener('contextmenu', e => {
     if (params.disableContextMenu && (device.ios || device.android || device.cordova || window.Capacitor && (window.Capacitor.isNative || window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()))) {
@@ -458,7 +462,8 @@ export default {
       touchEvents: {
         start: support.touch ? 'touchstart' : 'pointerdown',
         move: support.touch ? 'touchmove' : 'pointermove',
-        end: support.touch ? 'touchend' : 'pointerup'
+        end: support.touch ? 'touchend' : 'pointerup',
+        cancel: support.touch ? 'touchcancel' : 'pointercancel'
       }
     });
   },

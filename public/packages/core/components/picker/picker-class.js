@@ -3,7 +3,7 @@ import $ from '../../shared/dom7.js';
 import { extend, nextTick, deleteProps } from '../../shared/utils.js';
 import Framework7Class from '../../shared/class.js';
 import { getDevice } from '../../shared/get-device.js';
-import pickerColumn from './picker-column.js';
+import pickerColumn, { isPickerDisabled } from './picker-column.js';
 
 /** @jsx $jsx */
 import $jsx from '../../shared/$jsx.js';
@@ -467,6 +467,7 @@ class Picker extends Framework7Class {
       params
     } = picker;
     if (opened) return;
+    if (!inline && isPickerDisabled(picker)) return;
     if (picker.cols.length === 0 && params.cols.length) {
       params.cols.forEach(col => {
         picker.cols.push(col);

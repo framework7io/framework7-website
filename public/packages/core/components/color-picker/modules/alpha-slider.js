@@ -40,7 +40,7 @@ export default {
       on: {
         change(range, value) {
           const alpha = Math.floor(value * 100) / 100;
-          self.setValue({
+          self.setValueFromUser({
             alpha
           });
         }
@@ -54,7 +54,7 @@ export default {
         return;
       }
       value = Math.max(0, Math.min(1, value));
-      self.setValue({
+      self.setValueFromUser({
         alpha: value
       });
     }

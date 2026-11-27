@@ -78,7 +78,7 @@ export default {
       limitKnobPosition: self.app.theme === 'ios',
       on: {
         change(range, value) {
-          self.setValue({
+          self.setValueFromUser({
             hue: value
           });
         }
@@ -95,7 +95,7 @@ export default {
       on: {
         change(range, value) {
           const s = Math.floor(value * 1000) / 1000;
-          self.setValue({
+          self.setValueFromUser({
             hsb: [self.value.hsb[0], s, self.value.hsb[2]]
           });
         }
@@ -112,7 +112,7 @@ export default {
       on: {
         change(range, value) {
           const b = Math.floor(value * 1000) / 1000;
-          self.setValue({
+          self.setValueFromUser({
             hsb: [self.value.hsb[0], self.value.hsb[1], b]
           });
         }
@@ -132,7 +132,7 @@ export default {
         value = Math.max(0, Math.min(100, value)) / 100;
       }
       hsb[index] = value;
-      self.setValue({
+      self.setValueFromUser({
         hsb
       });
     }

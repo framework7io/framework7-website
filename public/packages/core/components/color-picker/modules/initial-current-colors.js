@@ -19,7 +19,7 @@ export default {
           hex,
           alpha
         } = self.initialValue;
-        self.setValue({
+        self.setValueFromUser({
           hex,
           alpha
         });

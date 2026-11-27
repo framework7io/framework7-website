@@ -1,5 +1,5 @@
 /**
- * Framework7 9.3.0
+ * Framework7 9.4.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: October 30, 2026
+ * Released on: November 27, 2026
  */
 
 (function (global, factory) {
@@ -6444,6 +6444,8 @@
       }
       function handleTouchEnd(e) {
         if (!e.isTrusted) return true;
+        // touchcancel is re-emitted as app "touchend" for components, cleanup is in handleTouchCancel
+        if (e.type === 'touchcancel') return true;
         isScrolling = undefined;
         isSegmentedStrong = false;
         segmentedStrongEl = null;
@@ -6534,6 +6536,10 @@
       function appTouchEndPassive(e) {
         emitAppTouchEvent('touchend:passive', e);
       }
+      function appTouchCancel(e) {
+        // Cancelled touch ends the gesture, so components relying on "touchend" can reset their state
+        emitAppTouchEvent('touchend touchend:active touchend:passive', e);
+      }
       const passiveListener = {
         passive: true
       };
@@ -6555,6 +6561,7 @@
       document.addEventListener(app.touchEvents.start, appTouchStartPassive, passiveListenerCapture);
       document.addEventListener(app.touchEvents.move, appTouchMovePassive, passiveListener);
       document.addEventListener(app.touchEvents.end, appTouchEndPassive, passiveListener);
+      document.addEventListener(app.touchEvents.cancel, appTouchCancel, passiveListener);
       if (support.touch) {
         app.on('click', handleClick);
         app.on('touchstart', handleTouchStart);
@@ -6567,9 +6574,6 @@
         app.on('touchstart', handleMouseDown);
         app.on('touchmove', handleMouseMove);
         app.on('touchend', handleMouseUp);
-        document.addEventListener('pointercancel', handleMouseUp, {
-          passive: true
-        });
       }
       document.addEventListener('contextmenu', e => {
         if (params.disableContextMenu && (device.ios || device.android || device.cordova || window.Capacitor && (window.Capacitor.isNative || window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()))) {
@@ -6611,7 +6615,8 @@
           touchEvents: {
             start: support.touch ? 'touchstart' : 'pointerdown',
             move: support.touch ? 'touchmove' : 'pointermove',
-            end: support.touch ? 'touchend' : 'pointerup'
+            end: support.touch ? 'touchend' : 'pointerup',
+            cancel: support.touch ? 'touchcancel' : 'pointercancel'
           }
         });
       },
@@ -22330,7 +22335,7 @@
           range.setValue(newValue, true);
         }
         function handleTouchEnd(e) {
-          if (e.type === 'touchend') {
+          if (e.type === 'touchend' || e.type === 'touchcancel') {
             let touchEnded;
             for (let i = 0; i < e.changedTouches.length; i += 1) {
               if (e.changedTouches[i].identifier === targetTouchIdentifier) touchEnded = true;
@@ -23425,6 +23430,11 @@
       return str.replace(/[^\u0000-\u007E]/g, a => diacriticsMap[a] || a);
     }
 
+    function isDisabled$3(ss) {
+      if (ss.selectEl && ss.selectEl.matches(':disabled')) return true;
+      if (ss.$el && ss.$el.closest('.disabled').length) return true;
+      return false;
+    }
     let SmartSelect$1 = class SmartSelect extends Framework7Class {
       constructor(app, params = {}) {
         super(params, [app]);
@@ -23502,9 +23512,21 @@
           $el.off('change', 'select', onChange);
         };
         function handleInputChange() {
+          const inputEl = this;
+          if (isDisabled$3(ss)) {
+            // Smart select was disabled while opened: revert input state and close
+            if (inputEl.type === 'checkbox') {
+              inputEl.checked = !inputEl.checked;
+            } else {
+              ss.$containerEl.find(`input[type="radio"][name="${ss.inputName}"]`).each(radioEl => {
+                radioEl.checked = radioEl.value === ss.selectEl.value;
+              });
+            }
+            ss.close();
+            return;
+          }
           let optionEl;
           let text;
-          const inputEl = this;
           const value = inputEl.value;
           let optionText = [];
           let displayAs;
@@ -24235,7 +24257,7 @@
       }
       open(type) {
         const ss = this;
-        if (ss.opened) return ss;
+        if (ss.opened || isDisabled$3(ss)) return ss;
         let prevented = false;
         function prevent() {
           prevented = true;
@@ -24426,6 +24448,13 @@
       name: 'grid'
     };
 
+    function isDisabled$2(calendar) {
+      const {
+        $inputEl
+      } = calendar;
+      if (!$inputEl || !$inputEl.length) return false;
+      return $inputEl[0].matches(':disabled') || $inputEl.closest('.disabled').length > 0;
+    }
     let Calendar$1 = class Calendar extends Framework7Class {
       constructor(app, params = {}) {
         super(params, [app]);
@@ -24667,6 +24696,10 @@
           }
           function handleDayClick(e) {
             if (!allowItemClick) return;
+            if (isDisabled$2(calendar)) {
+              if (!calendar.inline) calendar.close();
+              return;
+            }
             let $dayEl = $(e.target).parents('.calendar-day');
             if ($dayEl.length === 0 && $(e.target).hasClass('calendar-day')) {
               $dayEl = $(e.target);
@@ -26016,6 +26049,11 @@
         const {
           is12HoursFormat
         } = calendar;
+        if (calendar.timePickerInstance && isDisabled$2(calendar)) {
+          if (calendar.timePickerPopover && calendar.timePickerPopover.opened) calendar.timePickerPopover.close();
+          if (!calendar.inline) calendar.close();
+          return;
+        }
         if (calendar.timePickerInstance) {
           const timePickerValue = calendar.timePickerInstance.value;
           let hours = parseInt(timePickerValue[0], 10);
@@ -26172,6 +26210,7 @@
           params
         } = calendar;
         if (opened) return;
+        if (!inline && isDisabled$2(calendar)) return;
         if (inline) {
           calendar.$el = $(calendar.render());
           calendar.$el[0].f7Calendar = calendar;
@@ -26415,6 +26454,13 @@
       }
     };
 
+    function isPickerDisabled(picker) {
+      const {
+        $inputEl
+      } = picker;
+      if (!$inputEl || !$inputEl.length) return false;
+      return $inputEl[0].matches(':disabled') || $inputEl.closest('.disabled').length > 0;
+    }
     function pickerColumn(colEl, updateItems) {
       const picker = this;
       // const app = picker.app;
@@ -26508,9 +26554,24 @@
         }
       };
       function handleScroll() {
+        if (isPickerDisabled(picker)) {
+          const scrollTop = col.$itemsEl[0].scrollTop;
+          if (Math.round(scrollTop / itemHeight) === col.activeIndex) return;
+          if (picker.inline) {
+            // keep column on the current value
+            col.$itemsEl[0].scrollTop = col.activeIndex * itemHeight;
+          } else {
+            picker.close();
+          }
+          return;
+        }
         col.updateItems();
       }
       function handleClick() {
+        if (isPickerDisabled(picker)) {
+          if (!picker.inline) picker.close();
+          return;
+        }
         const value = $(this).attr('data-picker-value');
         col.setValue(value);
       }
@@ -26996,6 +27057,7 @@
           params
         } = picker;
         if (opened) return;
+        if (!inline && isPickerDisabled(picker)) return;
         if (picker.cols.length === 0 && params.cols.length) {
           params.cols.forEach(col => {
             picker.cols.push(col);
@@ -27525,7 +27587,7 @@
         }
         function handleTouchEnd(e) {
           if (!e.isTrusted) return;
-          if (e.type === 'touchend' && e.changedTouches && e.changedTouches.length > 0 && touchId) {
+          if ((e.type === 'touchend' || e.type === 'touchcancel') && e.changedTouches && e.changedTouches.length > 0 && touchId) {
             if (e.changedTouches[0].identifier !== touchId) {
               isTouched = false;
               isScrolling = false;
@@ -43780,6 +43842,13 @@
     };
 
     /* eslint "no-useless-escape": "off" */
+    function isDisabled$1(ac) {
+      const {
+        $inputEl,
+        $openerEl
+      } = ac;
+      return [$inputEl, $openerEl].some($el => $el && $el.length && ($el[0].matches(':disabled') || $el.closest('.disabled').length > 0));
+    }
     let Autocomplete$1 = class Autocomplete extends Framework7Class {
       constructor(app, params = {}) {
         super(params, [app]);
@@ -43888,6 +43957,20 @@
         }
         function onPageInputChange() {
           const inputEl = this;
+          if (isDisabled$1(ac)) {
+            // Autocomplete was disabled while opened: revert input state and close
+            if (inputEl.type === 'checkbox') {
+              inputEl.checked = !inputEl.checked;
+            } else {
+              const current = ac.value && ac.value[0];
+              const currentValue = current && typeof current === 'object' ? current[ac.params.valueProperty] : current;
+              $(inputEl).parents('ul').find(`input[name="${inputEl.name}"]`).each(el => {
+                el.checked = `${el.value}` === `${currentValue}`;
+              });
+            }
+            ac.close();
+            return;
+          }
           const value = inputEl.value;
           const isValues = $(inputEl).parents('.autocomplete-values').length > 0;
           let item;
@@ -43993,6 +44076,10 @@
           $newItem.addClass('autocomplete-dropdown-selected');
         }
         function onDropdownClick() {
+          if (isDisabled$1(ac)) {
+            ac.close();
+            return;
+          }
           const $clickedEl = $(this);
           let clickedItem;
           for (let i = 0; i < ac.items.length; i += 1) {
@@ -44536,7 +44623,7 @@
       }
       open() {
         const ac = this;
-        if (ac.opened) return ac;
+        if (ac.opened || isDisabled$1(ac)) return ac;
         const openIn = ac.params.openIn;
         ac[`open${openIn.split('').map((el, index) => {
       if (index === 0) return el.toUpperCase();
@@ -45521,7 +45608,7 @@
           on: {
             change(range, value) {
               const alpha = Math.floor(value * 100) / 100;
-              self.setValue({
+              self.setValueFromUser({
                 alpha
               });
             }
@@ -45535,7 +45622,7 @@
             return;
           }
           value = Math.max(0, Math.min(1, value));
-          self.setValue({
+          self.setValueFromUser({
             alpha: value
           });
         }
@@ -45627,7 +45714,7 @@
           if (current < min) {
             value = '000';
           }
-          self.setValue({
+          self.setValueFromUser({
             hex: value
           });
         }
@@ -45734,7 +45821,7 @@
           limitKnobPosition: self.app.theme === 'ios',
           on: {
             change(range, value) {
-              self.setValue({
+              self.setValueFromUser({
                 hue: value
               });
             }
@@ -45751,7 +45838,7 @@
           on: {
             change(range, value) {
               const s = Math.floor(value * 1000) / 1000;
-              self.setValue({
+              self.setValueFromUser({
                 hsb: [self.value.hsb[0], s, self.value.hsb[2]]
               });
             }
@@ -45768,7 +45855,7 @@
           on: {
             change(range, value) {
               const b = Math.floor(value * 1000) / 1000;
-              self.setValue({
+              self.setValueFromUser({
                 hsb: [self.value.hsb[0], self.value.hsb[1], b]
               });
             }
@@ -45788,7 +45875,7 @@
             value = Math.max(0, Math.min(100, value)) / 100;
           }
           hsb[index] = value;
-          self.setValue({
+          self.setValueFromUser({
             hsb
           });
         }
@@ -45892,7 +45979,7 @@
           limitKnobPosition: self.app.theme === 'ios',
           on: {
             change(range, value) {
-              self.setValue({
+              self.setValueFromUser({
                 hue: value
               });
             }
@@ -45967,7 +46054,7 @@
           on: {
             change(range, value) {
               const b = Math.floor(value * 1000) / 1000;
-              self.setValue({
+              self.setValueFromUser({
                 hsb: [self.value.hsb[0], self.value.hsb[1], b]
               });
             }
@@ -46034,7 +46121,7 @@
       init(self) {
         function handlePaletteClick(e) {
           const hex = $(e.target).attr('data-palette-color');
-          self.setValue({
+          self.setValueFromUser({
             hex
           });
         }
@@ -46071,7 +46158,7 @@
               hex,
               alpha
             } = self.initialValue;
-            self.setValue({
+            self.setValueFromUser({
               hex,
               alpha
             });
@@ -46171,7 +46258,7 @@
           limitKnobPosition: true,
           on: {
             change(range, value) {
-              self.setValue({
+              self.setValueFromUser({
                 rgb: [value, self.value.rgb[1], self.value.rgb[2]]
               });
             }
@@ -46188,7 +46275,7 @@
           limitKnobPosition: true,
           on: {
             change(range, value) {
-              self.setValue({
+              self.setValueFromUser({
                 rgb: [self.value.rgb[0], value, self.value.rgb[2]]
               });
             }
@@ -46205,7 +46292,7 @@
           limitKnobPosition: true,
           on: {
             change(range, value) {
-              self.setValue({
+              self.setValueFromUser({
                 rgb: [self.value.rgb[0], self.value.rgb[1], value]
               });
             }
@@ -46221,7 +46308,7 @@
           }
           value = Math.max(0, Math.min(255, value));
           rgb[index] = value;
-          self.setValue({
+          self.setValueFromUser({
             rgb
           });
         }
@@ -46357,7 +46444,7 @@
           limitKnobPosition: self.app.theme === 'ios',
           on: {
             change(range, value) {
-              self.setValue({
+              self.setValueFromUser({
                 rgb: [value, self.value.rgb[1], self.value.rgb[2]]
               });
             }
@@ -46373,7 +46460,7 @@
           limitKnobPosition: self.app.theme === 'ios',
           on: {
             change(range, value) {
-              self.setValue({
+              self.setValueFromUser({
                 rgb: [self.value.rgb[0], value, self.value.rgb[2]]
               });
             }
@@ -46389,7 +46476,7 @@
           limitKnobPosition: self.app.theme === 'ios',
           on: {
             change(range, value) {
-              self.setValue({
+              self.setValueFromUser({
                 rgb: [self.value.rgb[0], self.value.rgb[1], value]
               });
             }
@@ -46405,7 +46492,7 @@
           }
           value = Math.max(0, Math.min(255, value));
           rgb[index] = value;
-          self.setValue({
+          self.setValueFromUser({
             rgb
           });
         }
@@ -46502,7 +46589,7 @@
           let b = (y - specterRect.top) / specterRect.height;
           s = Math.max(0, Math.min(1, s));
           b = 1 - Math.max(0, Math.min(1, b));
-          self.setValue({
+          self.setValueFromUser({
             hsb: [self.value.hue, s, b]
           });
         }
@@ -46617,7 +46704,7 @@
           let s = (y - specterRect.top) / specterRect.height;
           h = Math.max(0, Math.min(360, h));
           s = 1 - Math.max(0, Math.min(1, s));
-          self.setValue({
+          self.setValueFromUser({
             hsb: [h, s, self.value.hsb[2]]
           });
         }
@@ -46755,7 +46842,7 @@
           let angleDeg = angleRad * 180 / Math.PI + 90;
           if (angleDeg < 0) angleDeg += 360;
           angleDeg = 360 - angleDeg;
-          self.setValue({
+          self.setValueFromUser({
             hue: angleDeg
           });
         }
@@ -46764,7 +46851,7 @@
           let b = (y - specterRect.top) / specterRect.height;
           s = Math.max(0, Math.min(1, s));
           b = 1 - Math.max(0, Math.min(1, b));
-          self.setValue({
+          self.setValueFromUser({
             hsb: [self.value.hue, s, b]
           });
         }
@@ -46870,6 +46957,13 @@
       }
     };
 
+    function isDisabled(self) {
+      const {
+        $inputEl,
+        $targetEl
+      } = self;
+      return [$inputEl, $targetEl].some($el => $el && $el.length && ($el[0].matches(':disabled') || $el.closest('.disabled').length > 0));
+    }
     let ColorPicker$1 = class ColorPicker extends Framework7Class {
       constructor(app, params = {}) {
         super(params, [app]);
@@ -47070,6 +47164,15 @@
       // eslint-disable-next-line
       normalizeHsValues(arr) {
         return [Math.floor(arr[0] * 10) / 10, Math.floor(arr[1] * 1000) / 1000, Math.floor(arr[2] * 1000) / 1000];
+      }
+      setValueFromUser(value) {
+        const self = this;
+        if (isDisabled(self)) {
+          // disabled while opened: keep the value and close (or re-sync inline modules)
+          if (self.inline) self.updateModules();else self.close();
+          return;
+        }
+        self.setValue(value);
       }
       setValue(value = {}, updateModules = true) {
         const self = this;
@@ -47545,6 +47648,7 @@
           params
         } = self;
         if (opened) return;
+        if (!inline && isDisabled(self)) return;
         if (inline) {
           self.$el = $(self.render());
           self.$el[0].f7ColorPicker = self;

@@ -39,7 +39,7 @@ export default {
       if (current < min) {
         value = '000';
       }
-      self.setValue({
+      self.setValueFromUser({
         hex: value
       });
     }

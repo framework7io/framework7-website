@@ -4,6 +4,13 @@ import $ from '../../shared/dom7.js';
 import { getDevice } from '../../shared/get-device.js';
 /** @jsx $jsx */
 import $jsx from '../../shared/$jsx.js';
+function isDisabled(calendar) {
+  const {
+    $inputEl
+  } = calendar;
+  if (!$inputEl || !$inputEl.length) return false;
+  return $inputEl[0].matches(':disabled') || $inputEl.closest('.disabled').length > 0;
+}
 class Calendar extends Framework7Class {
   constructor(app, params = {}) {
     super(params, [app]);
@@ -245,6 +252,10 @@ class Calendar extends Framework7Class {
       }
       function handleDayClick(e) {
         if (!allowItemClick) return;
+        if (isDisabled(calendar)) {
+          if (!calendar.inline) calendar.close();
+          return;
+        }
         let $dayEl = $(e.target).parents('.calendar-day');
         if ($dayEl.length === 0 && $(e.target).hasClass('calendar-day')) {
           $dayEl = $(e.target);
@@ -1594,6 +1605,11 @@ class Calendar extends Framework7Class {
     const {
       is12HoursFormat
     } = calendar;
+    if (calendar.timePickerInstance && isDisabled(calendar)) {
+      if (calendar.timePickerPopover && calendar.timePickerPopover.opened) calendar.timePickerPopover.close();
+      if (!calendar.inline) calendar.close();
+      return;
+    }
     if (calendar.timePickerInstance) {
       const timePickerValue = calendar.timePickerInstance.value;
       let hours = parseInt(timePickerValue[0], 10);
@@ -1750,6 +1766,7 @@ class Calendar extends Framework7Class {
       params
     } = calendar;
     if (opened) return;
+    if (!inline && isDisabled(calendar)) return;
     if (inline) {
       calendar.$el = $(calendar.render());
       calendar.$el[0].f7Calendar = calendar;
