@@ -64,8 +64,7 @@ block content
       <script>
         import { onMount } from 'svelte';
         // define props so the component will receive it
-        export let f7route;
-        export let f7router;
+        let { f7route, f7router } = $props();
 
         onMount(() => {
           console.log(f7route.url)
@@ -88,44 +87,29 @@ block content
       li `route` - object with matching route from available routes
 
     h2 Slots
-    p All Framework7 Svelte components use `slots` to distribute children across component structure. But due to Svelte limitation it is not allowed to use slots on custom components, so sometimes you may need to wrap it with dummy HTML element or use HTML layout instead:
+    p In Svelte 5 slots are replaced by <b>snippets</b>. Framework7 Svelte components render their content through snippet props, so named content is passed with a `{#snippet}` block using the prop name the component expects, and plain children become the default `children` snippet. No wrapping element is needed:
     p For example
     ```svelte
       <Page>
         <List>
           <ListItem title="Toggle">
-            <!-- wrap with extra element -->
-            <span slot="after">
+            {#snippet after()}
               <Toggle />
-            </span>
+            {/snippet}
           </ListItem>
         </List>
       </Page>
     ```
+    p Text-only content can also be passed directly as a prop, e.g. `<ListItem title="Toggle" after="On" />`.
 
     h2 Events
-    p All Framework7 Svelte components support events. But the way how Svelte handles events (by emitting CustomEvent) can be inconvenient when we need to get event arguments (via `event.detail`) and especially when there are few arguments.
-    p So all Framework7 Svelte components emit events with arguments as array:
-    ```svelte
-      <Page on:pageInit={onPageInit}>
-        <!-- -->
-      </Page>
-      <script>
-        // pageInit event has one argument with page data
-        function onPageInit(event) {
-          // it will be available in event.detail array
-          const pageData = event.detail[0]
-          console.log(pageData);
-        }
-      </script>
-    ```
-    p To workaround this, all Framework7 Svelte component events has same `on${Event}` prop callback:
+    p Framework7 Svelte components take Framework7 events as callback props: an event named `pageInit` is passed as the `onPageInit` prop, and the callback receives the event arguments directly instead of `event.detail`:
     ```svelte
       <Page onPageInit={onPageInit}>
         <!-- -->
       </Page>
       <script>
-        // pageInit event has one argument with page data
+        // pageInit callback has one argument with page data
         function onPageInit(pageData) {
           console.log(pageData);
         }
